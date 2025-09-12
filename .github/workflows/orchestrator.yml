@@ -38,3 +38,9 @@ jobs:
         with:
           name: orchestrator-report
           path: aggregated-report.md
+
+      - name: Show summary in Actions UI
+        if: always()
+        run: |
+          echo "## Aggregated Report" >> $GITHUB_STEP_SUMMARY
+          cat aggregated-report.md >> $GITHUB_STEP_SUMMARY
