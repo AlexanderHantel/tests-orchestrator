@@ -55,7 +55,7 @@ def download_artifact(owner, repo, artifact_id, token):
     r.raise_for_status()
     return r.content
 
-def parse_junit_from_zip_bytes(zip_bytes):
+def parse_report_from_zip_bytes(zip_bytes):
     z = zipfile.ZipFile(io.BytesIO(zip_bytes))
     totals = {"tests":0, "failures":0, "errors":0, "skipped":0}
     details = []
@@ -143,10 +143,10 @@ def main():
                 report_lines.append(f"  - {art['name']} (id={art['id']})")
                 try:
                     zbytes = download_artifact(owner, repo, art['id'], token)
-                    totals, details = parse_junit_from_zip_bytes(zbytes)
+                    totals, details = parse_report_from_zip_bytes(zbytes)
                     if totals["tests"] > 0:
                         report_lines.append(
-                            f"    - parsed junit: tests={totals['tests']} failures={totals['failures']} errors={totals['errors']} skipped={totals['skipped']}"
+                            f"    - parsed report: tests={totals['tests']} failures={totals['failures']} errors={totals['errors']} skipped={totals['skipped']}"
                         )
                         for d in details:
                             report_lines.append(f"      {d}")

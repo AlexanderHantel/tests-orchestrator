@@ -2,6 +2,10 @@
 
 This repository serves as an **orchestrator** for downstream GitHub repositories [db-test-scripts-automatisation](https://github.com/AlexanderHantel/db-test-scripts-automatisation) and [db-test-java](https://github.com/AlexanderHantel/db-test-java). It triggers their CI workflows, collects their test artifacts, aggregates the results, and publishes a combined report directly inside the GitHub Actions interface.
 
+> **Note:** Some tests are **intentionally failing** in dependent repositories.  
+> This is done on purpose to demonstrate how the orchestrator report looks in **both positive and negative scenarios**.
+
+
 ## Features
 
 - Triggers workflows in multiple dependent repositories using the GitHub API  
