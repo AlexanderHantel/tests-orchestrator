@@ -13,6 +13,9 @@ def dispatch_workflow(owner, repo, workflow, ref, token, inputs=None):
     if inputs:
         body["inputs"] = inputs
     r = requests.post(url, json=body, headers=auth_headers(token))
+
+    print(f"Dispatch POST {url} -> {r.status_code}, body={r.text}")
+
     return r.status_code in (204, 201)
 
 def find_recent_run(owner, repo, workflow, after_ts, token, attempts=30, wait=2):
