@@ -31,7 +31,6 @@ jobs:
             AlexanderHantel/db-test-scripts-automatisation|db-test-scripts.yml|main
             AlexanderHantel/db-test-java|ci.yml|main
         run: |
-          ls -R .github
           python .github/scripts/trigger_and_collect.py --targets "$TARGETS"
 
       - name: Upload aggregated report

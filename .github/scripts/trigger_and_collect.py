@@ -14,8 +14,6 @@ def dispatch_workflow(owner, repo, workflow, ref, token, inputs=None):
         body["inputs"] = inputs
     r = requests.post(url, json=body, headers=auth_headers(token))
 
-    print(f"Dispatch POST {url} -> {r.status_code}, body={r.text}")
-
     return r.status_code in (204, 201)
 
 def find_recent_run(owner, repo, workflow, after_ts, token, attempts=30, wait=2):
@@ -67,21 +65,29 @@ def parse_junit_from_zip_bytes(zip_bytes):
                 data = z.read(name)
                 root = ET.fromstring(data)
                 if root.tag == 'testsuites':
-                    for ts in root.findall('testsuite'):
-                        t = int(ts.attrib.get('tests',0))
-                        f = int(ts.attrib.get('failures',0))
-                        e = int(ts.attrib.get('errors',0))
-                        s = int(ts.attrib.get('skipped',0))
-                        totals["tests"]+=t; totals["failures"]+=f; totals["errors"]+=e; totals["skipped"]+=s
+                    suites = root.findall('testsuite')
                 elif root.tag == 'testsuite':
-                    t = int(root.attrib.get('tests',0))
-                    f = int(root.attrib.get('failures',0))
-                    e = int(root.attrib.get('errors',0))
-                    s = int(root.attrib.get('skipped',0))
-                    totals["tests"]+=t; totals["failures"]+=f; totals["errors"]+=e; totals["skipped"]+=s
-                details.append((name, t, f, e, s))
+                    suites = [root]
+                else:
+                    continue
+
+                for ts in suites:
+                    t = int(ts.attrib.get('tests',0))
+                    f = int(ts.attrib.get('failures',0))
+                    e = int(ts.attrib.get('errors',0))
+                    s = int(ts.attrib.get('skipped',0))
+                    totals["tests"] += t; totals["failures"] += f
+                    totals["errors"] += e; totals["skipped"] += s
+
+                    for tc in ts.findall('testcase'):
+                        failure = tc.find('failure')
+                        if failure is not None:
+                            msg = failure.text.strip() if failure.text else "(no message)"
+                            details.append(
+                                f"❌ {tc.attrib.get('name')} — {msg}"
+                            )
             except Exception as exc:
-                details.append((name, "parse_error", str(exc)))
+                details.append(f"{name}: parse_error: {exc}")
     return totals, details
 
 def main():
