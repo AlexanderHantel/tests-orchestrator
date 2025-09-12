@@ -1,0 +1,37 @@
+name: Orchestrator CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo (for scripts)
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Trigger downstream workflows and collect results
+        env:
+          GH_TOKEN: ${{ secrets.REPO_DISPATCH_TOKEN }}
+          TARGETS: |
+            AlexanderHantel/db-test-scripts-automatisation|.github/workflows/ci.yml|main
+            AlexanderHantel/db-test-java|.github/workflows/ci.yml|main
+        run: |
+          mkdir -p .github/scripts
+          python .github/scripts/trigger_and_collect.py --targets "$TARGETS"
+
+      - name: Upload aggregated report
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchestrator-report
+          path: aggregated-report.md
