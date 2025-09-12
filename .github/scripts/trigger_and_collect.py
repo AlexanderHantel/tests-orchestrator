@@ -144,8 +144,12 @@ def main():
                 try:
                     zbytes = download_artifact(owner, repo, art['id'], token)
                     totals, details = parse_junit_from_zip_bytes(zbytes)
-                    if totals["tests"]>0:
-                        report_lines.append(f"    - parsed junit: tests={totals['tests']} failures={totals['failures']} errors={totals['errors']} skipped={totals['skipped']}")
+                    if totals["tests"] > 0:
+                        report_lines.append(
+                            f"    - parsed junit: tests={totals['tests']} failures={totals['failures']} errors={totals['errors']} skipped={totals['skipped']}"
+                        )
+                        for d in details:
+                            report_lines.append(f"      {d}")
                 except Exception as ex:
                     report_lines.append(f"    - error downloading/parsing artifact: {ex}")
         else:
