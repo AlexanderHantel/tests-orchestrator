@@ -32,6 +32,7 @@ jobs:
             AlexanderHantel/db-test-java|db-test-java-ci.yml|main
         run: |
           python .github/scripts/trigger_and_collect.py --targets "$TARGETS"
+        continue-on-error: true
 
       - name: Upload aggregated report
         uses: actions/upload-artifact@v4
@@ -44,3 +45,9 @@ jobs:
         run: |
           echo "## Aggregated Report" >> $GITHUB_STEP_SUMMARY
           cat aggregated-report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload orchestrator report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchestrator-report
+          path: aggregated-report.md
