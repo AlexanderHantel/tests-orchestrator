@@ -31,17 +31,29 @@ jobs:
             AlexanderHantel/db-test-scripts|db-test-scripts-ci.yml|main
             AlexanderHantel/db-test-java|db-test-java-ci.yml|main
         run: |
+          set +e
           python .github/scripts/trigger_and_collect.py --targets "$TARGETS"
-        continue-on-error: true
+          echo "exit_code=$?" >> $GITHUB_ENV
+
+      - name: Upload aggregated report
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchestrator-report-${{ github.run_id }}
+          path: aggregated-report.md
+          if-no-files-found: warn
 
       - name: Show summary in Actions UI
         if: always()
         run: |
           echo "## Aggregated Report" >> $GITHUB_STEP_SUMMARY
-          cat aggregated-report${{ github.run_id }}.md >> $GITHUB_STEP_SUMMARY
+          cat aggregated-report.md >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload orchestrator report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: orchestrator-report-${{ github.run_id }}
-          path: aggregated-report-${{ github.run_id }}.md
+      - name: Fail workflow if downstream failed
+        if: always()
+        run: |
+          if [ "${{ env.exit_code }}" -ne 0 ]; then
+            echo "❌ One or more downstream workflows failed — marking workflow as failed"
+            exit 1
+          else
+            echo "✅ All downstream workflows succeeded"
+          fi 
