@@ -38,7 +38,7 @@ jobs:
         if: always()
         run: |
           echo "## Aggregated Report" >> $GITHUB_STEP_SUMMARY
-          cat aggregated-report.md >> $GITHUB_STEP_SUMMARY
+          cat aggregated-report${{ github.run_id }}.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload orchestrator report artifact
         uses: actions/upload-artifact@v4
