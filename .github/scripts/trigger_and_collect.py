@@ -83,9 +83,11 @@ def parse_report_from_zip_bytes(zip_bytes):
                         failure = tc.find('failure')
                         if failure is not None:
                             msg = failure.text.strip() if failure.text else "(no message)"
-                            details.append(
-                                f"❌ {tc.attrib.get('name')} — {msg}"
-                            )
+                            details.append(f"❌ {tc.attrib.get('name')} — {failure.attrib.get('type','')}: {msg}")
+                        error = tc.find('error')
+                        if error is not None:
+                            msg = error.text.strip() if error.text else "(no message)"
+                            details.append(f"⚠️ {tc.attrib.get('name')} — {error.attrib.get('type','')}: {msg}")
             except Exception as exc:
                 details.append(f"{name}: parse_error: {exc}")
     return totals, details
