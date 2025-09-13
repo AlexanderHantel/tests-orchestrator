@@ -28,8 +28,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.REPO_DISPATCH_TOKEN }}
           TARGETS: |
-            AlexanderHantel/db-test-scripts-automatisation|db-test-scripts.yml|main
-            AlexanderHantel/db-test-java|ci.yml|main
+            AlexanderHantel/db-test-scripts|db-test-scripts-ci.yml|main
+            AlexanderHantel/db-test-java|db-test-java-ci.yml|main
         run: |
           python .github/scripts/trigger_and_collect.py --targets "$TARGETS"
 
