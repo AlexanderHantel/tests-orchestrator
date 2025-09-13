@@ -37,7 +37,7 @@ jobs:
       - name: Upload aggregated report
         uses: actions/upload-artifact@v4
         with:
-          name: orchestrator-report
+          name: orchestrator-report-${{ github.run_id }}
           path: aggregated-report.md
 
       - name: Show summary in Actions UI
