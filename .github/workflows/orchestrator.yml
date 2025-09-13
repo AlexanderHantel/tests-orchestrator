@@ -34,12 +34,6 @@ jobs:
           python .github/scripts/trigger_and_collect.py --targets "$TARGETS"
         continue-on-error: true
 
-      - name: Upload aggregated report
-        uses: actions/upload-artifact@v4
-        with:
-          name: orchestrator-report-${{ github.run_id }}
-          path: aggregated-report.md
-
       - name: Show summary in Actions UI
         if: always()
         run: |
@@ -49,5 +43,5 @@ jobs:
       - name: Upload orchestrator report artifact
         uses: actions/upload-artifact@v4
         with:
-          name: orchestrator-report
-          path: aggregated-report.md
+          name: orchestrator-report-${{ github.run_id }}
+          path: aggregated-report-${{ github.run_id }}.md
