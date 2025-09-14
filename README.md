@@ -1,9 +1,14 @@
 # Tests Orchestrator
 
-This repository serves as an **orchestrator** for downstream GitHub repositories [db-test-scripts-automatisation](https://github.com/AlexanderHantel/db-test-scripts-automatisation) and [db-test-java](https://github.com/AlexanderHantel/db-test-java). It triggers their CI workflows, collects their test artifacts, aggregates the results, and publishes a combined report directly inside the GitHub Actions interface.
+This repository serves as an **orchestrator** for downstream GitHub repositories [db-test-scripts](https://github.com/AlexanderHantel/db-test-scripts) and [db-test-java](https://github.com/AlexanderHantel/db-test-java). It triggers their CI workflows, collects their test artifacts, aggregates the results, and publishes a combined report directly inside the GitHub Actions interface.
 
-> **Note:** Some tests are **intentionally failing** in dependent repositories.  
-> This is done on purpose to demonstrate how the orchestrator report looks in **both positive and negative scenarios**.
+> **Note**  
+> The following test failures and errors are **intentionally introduced** to demonstrate that the orchestrator works correctly in both positive and negative scenarios:  
+> - Project **db-test-scripts**: `test_count.sh` — **FAIL**: expected 5 employees, got 4  
+> - Project **db-test-java**, unit test `testCountUsers` — **FAIL**: expected 5 employees, got 4  
+> - Project **db-test-java**, unit test `testAbsencedScript` — exception  
+>   `java.io.IOException: Cannot run program "scripts/test.sh"`
+
 
 
 ## Features
